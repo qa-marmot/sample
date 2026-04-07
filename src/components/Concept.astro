@@ -1,0 +1,67 @@
+---
+---
+<section id="concept" class="py-28 px-6 overflow-hidden">
+  <div class="max-w-6xl mx-auto">
+
+    <!-- グリッド: 画像 + テキスト -->
+    <div class="grid md:grid-cols-2 gap-14 lg:gap-20 items-center">
+
+      <!-- 画像ブロック -->
+      <div class="reveal relative">
+        <!-- メイン画像 (Unsplash: カフェ内装 by Francesca Tosolini) -->
+        <img
+          src="https://images.unsplash.com/photo-1521017432531-fbd92d768814?auto=format&fit=crop&w=900&q=80"
+          alt="温かみのあるカフェの内装"
+          class="w-full h-[480px] object-cover rounded-2xl shadow-2xl"
+          loading="lazy"
+        />
+        <!-- フローティングサブ画像 -->
+        <div class="absolute -bottom-8 -right-6 hidden md:block w-44 h-44 rounded-xl overflow-hidden shadow-xl border-4 border-cream">
+          <img
+            src="https://images.unsplash.com/photo-1447933601403-0c6688de566e?auto=format&fit=crop&w=300&q=80"
+            alt="丁寧に淹れたコーヒー"
+            class="w-full h-full object-cover"
+            loading="lazy"
+          />
+        </div>
+      </div>
+
+      <!-- テキストブロック -->
+      <div class="reveal md:pl-4" style="transition-delay: 0.15s">
+        <p class="font-sans text-xs tracking-[0.35em] uppercase text-latte mb-5">Our Concept</p>
+        <h2 class="font-display text-4xl sm:text-5xl font-bold text-espresso leading-[1.05] mb-7">
+          日常の中に、<br/><span class="italic text-mocha">特別な一杯</span>を。
+        </h2>
+        <div class="h-px w-12 bg-latte/50 mb-7"></div>
+        <p class="font-serif text-mocha/75 leading-[1.9] mb-6 text-[15px]">
+          Café Ouka は「ゆっくりと流れる時間」をコンセプトに生まれました。
+          朝の一杯から夜の仕上げまで、その日の気分に寄り添うコーヒーと空間をご用意しています。
+        </p>
+        <p class="font-serif text-mocha/75 leading-[1.9] mb-10 text-[15px]">
+          豆はシングルオリジンを中心に厳選し、バリスタが一杯ずつ丁寧に抽出。
+          お菓子は毎朝仕込み、素材の味をシンプルに引き出しています。
+        </p>
+
+        <!-- 3つのポイント -->
+        <div class="space-y-5">
+          {[
+            { label: '豆の産地にこだわる', body: '世界各地のシングルオリジン豆を毎月セレクト' },
+            { label: '静かで心地よい空間', body: '木と真鍮で仕上げたミニマルな店内設計' },
+            { label: '丁寧なハンドドリップ', body: 'バリスタが温度・時間を管理して一杯ずつ抽出' },
+          ].map(p => (
+            <div class="flex items-start gap-4">
+              <span class="mt-1 w-5 h-5 shrink-0 rounded-full bg-latte/20 flex items-center justify-center">
+                <span class="text-latte text-[10px]">✦</span>
+              </span>
+              <div>
+                <p class="font-sans font-medium text-espresso text-sm mb-0.5">{p.label}</p>
+                <p class="font-sans text-mocha/60 text-xs">{p.body}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>

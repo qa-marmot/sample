@@ -1,23 +1,36 @@
 ---
 ---
-<footer class="bg-espresso text-cream/50 py-12 px-6">
+<footer class="bg-espresso text-cream/45 py-16 px-6">
   <div class="max-w-5xl mx-auto">
-    <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+
+    <!-- 上段 -->
+    <div class="flex flex-col sm:flex-row items-center justify-between gap-8 pb-10 border-b border-cream/[0.08]">
+
+      <!-- ロゴ + キャッチ -->
       <div class="text-center sm:text-left">
-        <p class="font-display text-xl font-bold text-cream/80">
+        <p class="font-display text-2xl font-bold text-cream/85 tracking-wide mb-1">
           Café <span class="italic text-latte">Ouka</span>
         </p>
-        <p class="font-sans text-xs mt-1">東京・代々木上原 / Coffee & Sweets</p>
+        <p class="font-sans text-xs text-cream/40 tracking-wide">
+          東京・代々木上原 &ensp;/&ensp; Coffee &amp; Sweets
+        </p>
       </div>
-      <nav class="flex gap-6 text-xs font-sans tracking-widest uppercase">
-        <a href="#menu" class="hover:text-cream transition-colors">Menu</a>
-        <a href="#hours" class="hover:text-cream transition-colors">Hours</a>
-        <a href="#access" class="hover:text-cream transition-colors">Access</a>
+
+      <!-- ナビ -->
+      <nav aria-label="フッターナビゲーション" class="flex gap-7 text-[11px] font-sans tracking-[0.2em] uppercase text-cream/40">
+        <a href="#concept" class="hover:text-latte transition-colors duration-200">Concept</a>
+        <a href="#menu"    class="hover:text-latte transition-colors duration-200">Menu</a>
+        <a href="#hours"   class="hover:text-latte transition-colors duration-200">Hours</a>
+        <a href="#access"  class="hover:text-latte transition-colors duration-200">Access</a>
       </nav>
+
     </div>
-    <div class="mt-8 pt-6 border-t border-cream/10 flex flex-col sm:flex-row items-center justify-between gap-2 text-[11px]">
+
+    <!-- 下段 -->
+    <div class="pt-7 flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] text-cream/30">
       <p>© 2026 Café Ouka. All rights reserved.</p>
-      <p class="text-latte/60"> This is a demo site — サンプル制作物</p>
+      <p class="text-latte/40">This is a demo site — サンプル制作物</p>
     </div>
+
   </div>
 </footer>

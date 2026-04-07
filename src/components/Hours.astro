@@ -1,67 +1,88 @@
 ---
-const hours = [
-  { day: '月曜日', time: '定休日', closed: true },
-  { day: '火曜日', time: '10:00 – 20:00', closed: false },
-  { day: '水曜日', time: '10:00 – 20:00', closed: false },
-  { day: '木曜日', time: '10:00 – 20:00', closed: false },
-  { day: '金曜日', time: '10:00 – 21:00', closed: false },
-  { day: '土曜日', time: '9:00 – 21:00', closed: false },
-  { day: '日曜日・祝日', time: '9:00 – 19:00', closed: false },
-];
-const today = new Date().getDay(); // 0=Sun, 1=Mon...
-const dayMap = [6, 0, 1, 2, 3, 4, 5]; // map JS day to our array index
-const todayIndex = dayMap[today];
+import { HOURS, getTodayIndex } from '../utils/hours';
+
+const today = new Date().getDay();
+const todayIndex = getTodayIndex(today);
 ---
-<section id="hours" class="py-24 px-6 bg-espresso text-cream relative overflow-hidden">
-  <!-- Decorative -->
-  <div class="absolute top-0 right-0 w-96 h-96 rounded-full bg-mocha/20 blur-3xl pointer-events-none -translate-y-1/2 translate-x-1/2"></div>
-  <div class="absolute bottom-0 left-0 w-72 h-72 rounded-full bg-latte/10 blur-3xl pointer-events-none translate-y-1/2 -translate-x-1/2"></div>
+<section id="hours" class="py-28 px-6 bg-espresso text-cream relative overflow-hidden">
+
+  <!-- 装飾 -->
+  <div class="absolute top-0 right-0 w-[500px] h-[500px] rounded-full bg-mocha/15 blur-3xl pointer-events-none -translate-y-1/2 translate-x-1/2"></div>
+  <div class="absolute bottom-0 left-0 w-80 h-80 rounded-full bg-latte/8 blur-3xl pointer-events-none translate-y-1/2 -translate-x-1/2"></div>
+
+  <!-- 背景画像 (薄いオーバーレイ) -->
+  <div class="absolute inset-0 opacity-[0.04] pointer-events-none">
+    <img
+      src="https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=1920&q=80"
+      alt=""
+      class="w-full h-full object-cover"
+      loading="lazy"
+    />
+  </div>
 
   <div class="max-w-2xl mx-auto relative z-10">
-    <!-- Section header -->
-    <div class="text-center mb-12 reveal">
-      <p class="font-sans text-xs tracking-[0.3em] uppercase text-latte/70 mb-3">Hours</p>
+
+    <!-- セクションヘッダー -->
+    <div class="text-center mb-14 reveal">
+      <p class="font-sans text-xs tracking-[0.35em] uppercase text-latte/60 mb-4">Hours</p>
       <h2 class="font-display text-4xl sm:text-5xl font-bold text-cream">営業時間</h2>
-      <div class="mt-4 flex items-center justify-center gap-3">
-        <div class="h-px w-12 bg-latte/40"></div>
-        <span class="text-latte/60 text-sm">✦</span>
-        <div class="h-px w-12 bg-latte/40"></div>
+      <div class="mt-5 flex items-center justify-center gap-3">
+        <div class="h-px w-14 bg-latte/30"></div>
+        <span class="text-latte/50 text-sm">✦</span>
+        <div class="h-px w-14 bg-latte/30"></div>
       </div>
     </div>
 
-    <!-- Hours list -->
+    <!-- 営業時間リスト -->
     <div class="space-y-2 reveal">
-      {hours.map((row, i) => (
-        <div class={`
-          flex items-center justify-between py-3.5 px-5 rounded-xl transition-all
-          ${i === todayIndex
-            ? 'bg-latte/20 border border-latte/40'
-            : 'border border-cream/5 hover:border-cream/15'}
-        `}>
+      {HOURS.map((row, i) => (
+        <div class={[
+          'flex items-center justify-between py-4 px-6 rounded-xl transition-all duration-200',
+          i === todayIndex
+            ? 'bg-latte/15 border border-latte/35'
+            : 'border border-cream/[0.06] hover:border-cream/20',
+        ].join(' ')}>
           <div class="flex items-center gap-3">
             {i === todayIndex && (
-              <span class="w-1.5 h-1.5 rounded-full bg-latte animate-pulse"></span>
+              <span class="w-1.5 h-1.5 rounded-full bg-latte animate-pulse shrink-0"></span>
             )}
-            <span class={`font-sans text-sm ${row.closed ? 'text-cream/30' : i === todayIndex ? 'text-cream font-medium' : 'text-cream/70'}`}>
+            <span class={[
+              'font-sans text-sm',
+              row.closed
+                ? 'text-cream/25'
+                : i === todayIndex
+                  ? 'text-cream font-medium'
+                  : 'text-cream/65',
+            ].join(' ')}>
               {row.day}
             </span>
             {i === todayIndex && (
-              <span class="text-xs bg-latte/30 text-latte rounded-full px-2 py-0.5 font-sans">本日</span>
+              <span class="text-[11px] bg-latte/25 text-latte rounded-full px-2.5 py-0.5 font-sans tracking-wide">
+                本日
+              </span>
             )}
           </div>
-          <span class={`font-display text-sm ${row.closed ? 'text-cream/25 line-through' : i === todayIndex ? 'text-latte' : 'text-cream/60'}`}>
+          <span class={[
+            'font-display text-sm tracking-wide',
+            row.closed
+              ? 'text-cream/20 line-through'
+              : i === todayIndex
+                ? 'text-latte'
+                : 'text-cream/55',
+          ].join(' ')}>
             {row.time}
           </span>
         </div>
       ))}
     </div>
 
-    <!-- Notes -->
-    <div class="mt-8 p-5 rounded-2xl border border-latte/20 bg-latte/5 reveal">
-      <p class="font-sans text-xs text-cream/50 leading-relaxed text-center">
+    <!-- 注記 -->
+    <div class="mt-10 p-6 rounded-2xl border border-latte/15 bg-latte/[0.04] reveal">
+      <p class="font-sans text-xs text-cream/40 leading-loose text-center">
         ※ 年末年始・お盆期間は営業時間が変わる場合があります<br/>
-        ラストオーダーは閉店30分前まで
+        ラストオーダーは閉店 30 分前まで
       </p>
     </div>
+
   </div>
 </section>
