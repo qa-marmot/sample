@@ -1,36 +1,71 @@
----
----
-<header class="fixed top-8 left-0 right-0 z-40 px-6">
-  <nav class="max-w-5xl mx-auto flex items-center justify-between bg-cream/80 backdrop-blur-md rounded-2xl px-6 py-3 shadow-md border border-latte/20">
-    <!-- Logo -->
-    <a href="#hero" class="font-display text-2xl font-bold drop-shadow-[0_1.2px_1.2px_rgba(255,255,255,0.8)] text-amber-600 tracking-wide">
-      Café <span class="text-latte italic">Ouka</span>
-    </a>
-    <!-- Desktop Nav -->
-    <ul class="hidden md:flex items-center gap-8 text-sm font-sans font-medium text-mocha tracking-widest uppercase">
-      <li><a href="#menu" class="hover:text-espresso transition-colors duration-200">Menu</a></li>
-      <li><a href="#hours" class="hover:text-espresso transition-colors duration-200">営業時間</a></li>
-      <li><a href="#access" class="hover:text-espresso transition-colors duration-200">アクセス</a></li>
-    </ul>
-    <!-- Mobile hamburger -->
-    <button id="menu-toggle" class="md:hidden flex flex-col gap-1.5 p-2" aria-label="メニューを開く">
-      <span class="block w-6 h-0.5 bg-espresso transition-all" id="bar1"></span>
-      <span class="block w-6 h-0.5 bg-espresso transition-all" id="bar2"></span>
-      <span class="block w-4 h-0.5 bg-espresso self-end transition-all" id="bar3"></span>
-    </button>
-  </nav>
-  <!-- Mobile drawer -->
-  <div id="mobile-menu" class="hidden md:hidden mt-4 bg-cream-dark/95 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-latte/20">
-    <ul class="flex flex-col gap-6 text-center font-display text-2xl text-espresso">
-      <li><a href="#menu" class="hover:text-latte transition-colors" onclick="document.getElementById('mobile-menu').classList.add('hidden')">Menu</a></li>
-      <li><a href="#hours" class="hover:text-latte transition-colors" onclick="document.getElementById('mobile-menu').classList.add('hidden')">営業時間</a></li>
-      <li><a href="#access" class="hover:text-latte transition-colors" onclick="document.getElementById('mobile-menu').classList.add('hidden')">アクセス</a></li>
-    </ul>
+<div class="sticky top-0 z-40">
+  <div class="bg-subtle px-gutter py-1.5 text-center text-xs font-bold tracking-label text-secondary">
+    DEMO / 架空店舗のサンプルサイト
   </div>
-</header>
+
+  <header class="border-b border-default bg-surface shadow-sm">
+    <div class="mx-auto flex min-h-16 max-w-content items-center justify-between px-gutter">
+      <a href="#hero" class="inline-flex min-h-11 items-center font-brand text-2xl font-bold text-primary">
+        Café <span class="ml-1 italic text-accent">Ouka</span>
+      </a>
+
+      <nav aria-label="メインナビゲーション" class="hidden md:block">
+        <ul class="flex items-center gap-8 text-sm font-bold text-secondary">
+          <li><a href="#menu" class="py-3 underline-offset-8 hover:text-link hover:underline">メニュー</a></li>
+          <li><a href="#concept" class="py-3 underline-offset-8 hover:text-link hover:underline">私たちについて</a></li>
+          <li><a href="#hours" class="py-3 underline-offset-8 hover:text-link hover:underline">営業時間</a></li>
+          <li><a href="#access" class="py-3 underline-offset-8 hover:text-link hover:underline">アクセス</a></li>
+        </ul>
+      </nav>
+
+      <button
+        id="menu-toggle"
+        type="button"
+        class="inline-flex min-h-11 min-w-11 flex-col items-center justify-center gap-1.5 rounded-md border border-default text-primary md:hidden"
+        aria-label="メニューを開く"
+        aria-controls="mobile-menu"
+        aria-expanded="false"
+      >
+        <span class="block h-0.5 w-5 bg-current"></span>
+        <span class="block h-0.5 w-5 bg-current"></span>
+        <span class="block h-0.5 w-5 bg-current"></span>
+      </button>
+    </div>
+
+    <nav id="mobile-menu" aria-label="モバイルナビゲーション" class="border-t border-default bg-surface px-gutter py-4 md:hidden" hidden>
+      <ul class="divide-y divide-default font-heading text-lg font-semibold text-primary">
+        <li><a href="#menu" class="flex min-h-12 items-center py-2">メニュー</a></li>
+        <li><a href="#concept" class="flex min-h-12 items-center py-2">私たちについて</a></li>
+        <li><a href="#hours" class="flex min-h-12 items-center py-2">営業時間</a></li>
+        <li><a href="#access" class="flex min-h-12 items-center py-2">アクセス</a></li>
+      </ul>
+    </nav>
+  </header>
+</div>
 
 <script>
-  document.getElementById('menu-toggle')?.addEventListener('click', () => {
-    document.getElementById('mobile-menu')?.classList.toggle('hidden');
+  const toggle = document.querySelector<HTMLButtonElement>('#menu-toggle');
+  const menu = document.querySelector<HTMLElement>('#mobile-menu');
+
+  const setMenuOpen = (open: boolean, returnFocus = false) => {
+    if (!toggle || !menu) return;
+    menu.hidden = !open;
+    toggle.setAttribute('aria-expanded', String(open));
+    toggle.setAttribute('aria-label', open ? 'メニューを閉じる' : 'メニューを開く');
+    if (returnFocus) toggle.focus();
+  };
+
+  toggle?.addEventListener('click', () => {
+    setMenuOpen(toggle.getAttribute('aria-expanded') !== 'true');
+  });
+
+  menu?.querySelectorAll('a').forEach((link) => {
+    link.addEventListener('click', () => setMenuOpen(false));
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && toggle?.getAttribute('aria-expanded') === 'true') {
+      setMenuOpen(false, true);
+    }
   });
 </script>

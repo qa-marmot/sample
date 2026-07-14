@@ -1,0 +1,18 @@
+---
+const facts = [
+  { label: '最寄り駅', value: '代々木上原駅 北口から徒歩5分' },
+  { label: '定休日', value: '毎週月曜日' },
+  { label: 'メニュー', value: 'Coffee & Sweets' },
+];
+---
+
+<aside aria-label="来店情報" class="border-y border-default bg-surface">
+  <div class="mx-auto grid max-w-content divide-y divide-default px-gutter md:grid-cols-3 md:divide-x md:divide-y-0">
+    {facts.map((fact) => (
+      <div class="py-5 md:px-8 md:first:pl-0 md:last:pr-0">
+        <p class="text-xs font-bold uppercase tracking-label text-accent">{fact.label}</p>
+        <p class="mt-1 font-heading text-lg font-semibold text-primary">{fact.value}</p>
+      </div>
+    ))}
+  </div>
+</aside>

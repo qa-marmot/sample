@@ -1,88 +1,51 @@
 ---
-import { HOURS, getTodayIndex } from '../utils/hours';
+import { HOURS, getTodayIndexForTimeZone } from '../utils/hours';
+import SectionHeading from './SectionHeading.astro';
 
-const today = new Date().getDay();
-const todayIndex = getTodayIndex(today);
+const todayIndex = getTodayIndexForTimeZone(new Date(), 'Asia/Tokyo');
 ---
-<section id="hours" class="py-28 px-6 bg-espresso text-cream relative overflow-hidden">
 
-  <!-- 装飾 -->
-  <div class="absolute top-0 right-0 w-[500px] h-[500px] rounded-full bg-mocha/15 blur-3xl pointer-events-none -translate-y-1/2 translate-x-1/2"></div>
-  <div class="absolute bottom-0 left-0 w-80 h-80 rounded-full bg-latte/8 blur-3xl pointer-events-none translate-y-1/2 -translate-x-1/2"></div>
-
-  <!-- 背景画像 (薄いオーバーレイ) -->
-  <div class="absolute inset-0 opacity-[0.04] pointer-events-none">
-    <img
-      src="https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=1920&q=80"
-      alt=""
-      class="w-full h-full object-cover"
-      loading="lazy"
-    />
-  </div>
-
-  <div class="max-w-2xl mx-auto relative z-10">
-
-    <!-- セクションヘッダー -->
-    <div class="text-center mb-14 reveal">
-      <p class="font-sans text-xs tracking-[0.35em] uppercase text-latte/60 mb-4">Hours</p>
-      <h2 class="font-display text-4xl sm:text-5xl font-bold text-cream">営業時間</h2>
-      <div class="mt-5 flex items-center justify-center gap-3">
-        <div class="h-px w-14 bg-latte/30"></div>
-        <span class="text-latte/50 text-sm">✦</span>
-        <div class="h-px w-14 bg-latte/30"></div>
-      </div>
-    </div>
-
-    <!-- 営業時間リスト -->
-    <div class="space-y-2 reveal">
-      {HOURS.map((row, i) => (
-        <div class={[
-          'flex items-center justify-between py-4 px-6 rounded-xl transition-all duration-200',
-          i === todayIndex
-            ? 'bg-latte/15 border border-latte/35'
-            : 'border border-cream/[0.06] hover:border-cream/20',
-        ].join(' ')}>
-          <div class="flex items-center gap-3">
-            {i === todayIndex && (
-              <span class="w-1.5 h-1.5 rounded-full bg-latte animate-pulse shrink-0"></span>
-            )}
-            <span class={[
-              'font-sans text-sm',
-              row.closed
-                ? 'text-cream/25'
-                : i === todayIndex
-                  ? 'text-cream font-medium'
-                  : 'text-cream/65',
-            ].join(' ')}>
-              {row.day}
-            </span>
-            {i === todayIndex && (
-              <span class="text-[11px] bg-latte/25 text-latte rounded-full px-2.5 py-0.5 font-sans tracking-wide">
-                本日
-              </span>
-            )}
-          </div>
-          <span class={[
-            'font-display text-sm tracking-wide',
-            row.closed
-              ? 'text-cream/20 line-through'
-              : i === todayIndex
-                ? 'text-latte'
-                : 'text-cream/55',
-          ].join(' ')}>
-            {row.time}
-          </span>
-        </div>
-      ))}
-    </div>
-
-    <!-- 注記 -->
-    <div class="mt-10 p-6 rounded-2xl border border-latte/15 bg-latte/[0.04] reveal">
-      <p class="font-sans text-xs text-cream/40 leading-loose text-center">
-        ※ 年末年始・お盆期間は営業時間が変わる場合があります<br/>
-        ラストオーダーは閉店 30 分前まで
+<section id="hours" class="theme-inverse bg-ink px-gutter py-section text-inverse">
+  <div class="mx-auto grid max-w-content gap-12 lg:grid-cols-[.8fr_1.2fr] lg:gap-20">
+    <div>
+      <SectionHeading
+        eyebrow="Opening Hours"
+        title="営業時間"
+        tone="dark"
+        description="曜日によって閉店時刻が異なります。ご来店前に当日の時間をご確認ください。"
+      />
+      <p class="mt-7 border-l-2 border-accent-soft pl-4 text-sm leading-relaxed text-accent-soft">
+        ラストオーダーは閉店30分前です。<br />年末年始・お盆期間は営業時間が変わる場合があります。
       </p>
     </div>
 
+    <div class="border-b border-accent-soft">
+      {HOURS.map((row, index) => {
+        const isToday = index === todayIndex;
+        return (
+          <div
+            class:list={[
+              'grid grid-cols-[minmax(0,1fr)_auto] items-center gap-5 border-t py-4 sm:px-5',
+              isToday ? 'border-l-4 border-accent-soft bg-white/5 pl-4' : 'border-accent-soft',
+            ]}
+            aria-current={isToday ? 'date' : undefined}
+          >
+            <div class="flex flex-wrap items-center gap-3">
+              <span class:list={['font-semibold', row.closed ? 'text-accent-soft line-through' : 'text-inverse']}>
+                {row.day}
+              </span>
+              {isToday && (
+                <span class="rounded-full border border-accent-soft px-2.5 py-0.5 text-xs font-bold text-accent-soft">
+                  本日
+                </span>
+              )}
+            </div>
+            <span class:list={['font-brand font-semibold', row.closed ? 'text-accent-soft' : 'text-inverse']}>
+              {row.time}
+            </span>
+          </div>
+        );
+      })}
+    </div>
   </div>
 </section>
