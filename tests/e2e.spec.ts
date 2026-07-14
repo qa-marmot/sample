@@ -1,174 +1,167 @@
 import { test, expect, type Page } from '@playwright/test';
 
-// ── ヘルパー ──────────────────────────────────────────────────
 async function gotoAndWait(page: Page) {
   await page.goto('/');
-  // アニメーション・遅延読み込みが終わるまで待機
   await page.waitForLoadState('networkidle');
-  // スクロールアニメーション用クラスをすべて即時付与
-  await page.evaluate(() => {
-    document.querySelectorAll('.reveal').forEach((el) => el.classList.add('visible'));
-  });
+  await page.evaluate(() => document.fonts.ready);
+  await page.locator('astro-dev-toolbar').evaluateAll((elements) => elements.forEach((element) => element.remove()));
 }
 
-// ── セクション存在確認 ────────────────────────────────────────
-test.describe('セクションのレンダリング', () => {
+test.describe('ページ構造とコンテンツ', () => {
   test.beforeEach(async ({ page }) => {
     await gotoAndWait(page);
   });
 
-  test('Hero セクションが表示される', async ({ page }) => {
+  test('主要セクションが正しい見出しで表示される', async ({ page }) => {
+    await expect(page.locator('#hero h1')).toContainText('Café');
+    await expect(page.locator('aside[aria-label="来店情報"]')).toBeVisible();
+    await expect(page.locator('#menu h2')).toContainText('一杯とひと皿');
+    await expect(page.locator('#concept h2')).toContainText('特別な一杯');
+    await expect(page.locator('#hours h2')).toHaveText('営業時間');
+    await expect(page.locator('#access h2')).toContainText('歩いて5分');
+    await expect(page.locator('footer')).toContainText('架空店舗');
+  });
+
+  test('Heroで所在地・商品・価値・CTAを理解できる', async ({ page }) => {
     const hero = page.locator('#hero');
-    await expect(hero).toBeVisible();
-    await expect(hero.locator('h1')).toContainText('Café');
+    await expect(hero).toContainText('代々木上原');
+    await expect(hero).toContainText('Coffee & Sweets');
+    await expect(hero).toContainText('シングルオリジン');
+    await expect(hero.getByRole('link', { name: 'メニューを見る' })).toHaveAttribute('href', '#menu');
+    await expect(hero.getByRole('link', { name: '営業時間・アクセス' })).toHaveAttribute('href', '#hours');
   });
 
-  test('Concept セクションが表示される', async ({ page }) => {
-    const concept = page.locator('#concept');
-    await expect(concept).toBeVisible();
-    await expect(concept.locator('h2')).toBeVisible();
+  test('メニュー13件と価格を欠落なく表示する', async ({ page }) => {
+    await expect(page.locator('#menu h3')).toHaveCount(3);
+    await expect(page.locator('#menu li')).toHaveCount(13);
+    await expect(page.locator('#menu').getByText(/^¥\d+$/)).toHaveCount(13);
   });
 
-  test('Menu セクションが表示される', async ({ page }) => {
-    const menu = page.locator('#menu');
-    await expect(menu).toBeVisible();
-    await expect(menu.locator('h2')).toContainText('メニュー');
+  test('営業時間7件と本日の表示がある', async ({ page }) => {
+    await expect(page.locator('#hours [aria-current="date"]')).toHaveCount(1);
+    await expect(page.locator('#hours [aria-current="date"]')).toContainText('本日');
   });
 
-  test('Hours セクションが表示される', async ({ page }) => {
-    const hours = page.locator('#hours');
-    await expect(hours).toBeVisible();
-    await expect(hours.locator('h2')).toContainText('営業時間');
-  });
-
-  test('Access セクションが表示される', async ({ page }) => {
-    const access = page.locator('#access');
-    await expect(access).toBeVisible();
-    await expect(access.locator('h2')).toContainText('アクセス');
-  });
-
-  test('Footer が表示される', async ({ page }) => {
-    const footer = page.locator('footer');
-    await expect(footer).toBeVisible();
-    await expect(footer).toContainText('Café');
+  test('架空店舗であることをmetadataと画面で明示する', async ({ page }) => {
+    await expect(page).toHaveTitle(/デモ（架空店舗）/);
+    await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex, nofollow');
+    await expect(page.getByText('DEMO / 架空店舗のサンプルサイト')).toBeVisible();
   });
 });
 
-// ── ナビゲーション ────────────────────────────────────────────
 test.describe('ナビゲーション', () => {
-  test('Header に Menu・Hours・Access リンクがある', async ({ page }) => {
+  test('デスクトップHeaderに主要リンクがある', async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 800 });
     await gotoAndWait(page);
-    const header = page.locator('header');
-    await expect(header.locator('a[href="#menu"]').first()).toBeVisible();
-    await expect(header.locator('a[href="#hours"]').first()).toBeVisible();
-    await expect(header.locator('a[href="#access"]').first()).toBeVisible();
+    const nav = page.getByRole('navigation', { name: 'メインナビゲーション' });
+    await expect(nav.getByRole('link', { name: 'メニュー' })).toBeVisible();
+    await expect(nav.getByRole('link', { name: '私たちについて' })).toBeVisible();
+    await expect(nav.getByRole('link', { name: '営業時間' })).toBeVisible();
+    await expect(nav.getByRole('link', { name: 'アクセス' })).toBeVisible();
   });
 
-  test('Hero の CTA ボタン「メニューを見る」が機能する', async ({ page }) => {
+  test('モバイルメニューのARIA状態とEscape終了が同期する', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
     await gotoAndWait(page);
-    // Hero セクション内の CTA に限定（Header の "Menu" リンクと区別）
-    const cta = page.locator('#hero a[href="#menu"]');
-    await expect(cta).toBeVisible();
-    await expect(cta).toHaveText(/メニューを見る/);
+    const toggle = page.locator('#menu-toggle');
+    const menu = page.getByRole('navigation', { name: 'モバイルナビゲーション' });
+
+    await expect(toggle).toHaveAttribute('aria-controls', 'mobile-menu');
+    await expect(toggle).toHaveAttribute('aria-expanded', 'false');
+    await expect(menu).toBeHidden();
+
+    await toggle.click();
+    await expect(toggle).toHaveAttribute('aria-expanded', 'true');
+    await expect(toggle).toHaveAccessibleName('メニューを閉じる');
+    await expect(menu).toBeVisible();
+
+    await page.keyboard.press('Escape');
+    await expect(toggle).toHaveAttribute('aria-expanded', 'false');
+    await expect(toggle).toBeFocused();
+    await expect(menu).toBeHidden();
+  });
+
+  test('モバイルメニューはリンク選択後に閉じる', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await gotoAndWait(page);
+    const toggle = page.locator('#menu-toggle');
+    await toggle.click();
+    await page.getByRole('navigation', { name: 'モバイルナビゲーション' }).getByRole('link', { name: 'メニュー' }).click();
+    await expect(toggle).toHaveAttribute('aria-expanded', 'false');
   });
 });
 
-// ── メニューコンテンツ ────────────────────────────────────────
-test.describe('メニューコンテンツ', () => {
+test.describe('アクセシビリティとレスポンシブ', () => {
   test.beforeEach(async ({ page }) => {
     await gotoAndWait(page);
   });
 
-  test('Coffee カテゴリが表示される', async ({ page }) => {
-    await expect(page.locator('#menu').getByText('Coffee').first()).toBeVisible();
+  test('skip linkが最初のTabでフォーカスされる', async ({ page }) => {
+    await page.keyboard.press('Tab');
+    const skipLink = page.getByRole('link', { name: '本文へ移動' });
+    await expect(skipLink).toBeFocused();
+    await expect(skipLink).toBeVisible();
   });
 
-  test('Tea & Others カテゴリが表示される', async ({ page }) => {
-    await expect(page.locator('#menu').getByText('Tea & Others').first()).toBeVisible();
+  test('h1は1つで、主要セクションはh2を持つ', async ({ page }) => {
+    await expect(page.locator('main h1')).toHaveCount(1);
+    for (const id of ['menu', 'concept', 'hours', 'access']) {
+      await expect(page.locator(`#${id} h2`)).toHaveCount(1);
+    }
   });
 
-  test('Food カテゴリが表示される', async ({ page }) => {
-    await expect(page.locator('#menu').getByText('Food').first()).toBeVisible();
-  });
-
-  test('価格が ¥ 表記で表示される', async ({ page }) => {
-    const prices = page.locator('#menu').getByText(/^¥\d+$/);
-    await expect(prices.first()).toBeVisible();
-    const count = await prices.count();
-    expect(count).toBeGreaterThan(0);
-  });
-});
-
-// ── アクセシビリティ ──────────────────────────────────────────
-test.describe('アクセシビリティ', () => {
-  test.beforeEach(async ({ page }) => {
-    await gotoAndWait(page);
-  });
-
-  test('全ての <img> に alt 属性がある', async ({ page }) => {
+  test('全画像にaltと寸法があり、外部画像へ直接依存しない', async ({ page }) => {
     const images = page.locator('img');
     const count = await images.count();
-    for (let i = 0; i < count; i++) {
-      const alt = await images.nth(i).getAttribute('alt');
-      expect(alt, `img[${i}] に alt がない`).not.toBeNull();
+    expect(count).toBe(3);
+    for (let i = 0; i < count; i += 1) {
+      const image = images.nth(i);
+      expect(await image.getAttribute('alt')).not.toBeNull();
+      expect(Number(await image.getAttribute('width'))).toBeGreaterThan(0);
+      expect(Number(await image.getAttribute('height'))).toBeGreaterThan(0);
+      expect(await image.getAttribute('src')).not.toMatch(/^https?:/);
     }
   });
 
-  test('ハンバーガーボタンに aria-label がある', async ({ page }) => {
-    const hamburger = page.locator('button#menu-toggle');
-    if ((await hamburger.count()) > 0) {
-      const label = await hamburger.getAttribute('aria-label');
-      expect(label).not.toBeNull();
-      expect(label!.length).toBeGreaterThan(0);
-    }
-  });
+  for (const width of [360, 390, 768, 1024, 1280, 1440]) {
+    test(`${width}pxで意図しない横スクロールがない`, async ({ page }) => {
+      await page.setViewportSize({ width, height: 900 });
+      await gotoAndWait(page);
+      const hasOverflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth);
+      expect(hasOverflow).toBe(false);
+    });
+  }
 
-  test('Hero の CTA ボタンが視認可能なテキストを持つ', async ({ page }) => {
-    const ctas = page.locator('#hero a');
-    const count = await ctas.count();
-    expect(count).toBeGreaterThan(0);
-    for (let i = 0; i < count; i++) {
-      const text = (await ctas.nth(i).innerText()).trim();
-      expect(text.length).toBeGreaterThan(0);
-    }
-  });
-
-  test('ページタイトルが設定されている', async ({ page }) => {
-    const title = await page.title();
-    expect(title.length).toBeGreaterThan(0);
-    expect(title).toContain('Café');
-  });
-
-  test('<html> に lang 属性がある', async ({ page }) => {
-    const lang = await page.locator('html').getAttribute('lang');
-    expect(lang).not.toBeNull();
-    expect(lang!.length).toBeGreaterThan(0);
+  test('存在しないルートは404を返す', async ({ page }) => {
+    const response = await page.goto('/not-found');
+    expect(response?.status()).toBe(404);
   });
 });
 
-// ── VRT: 視覚的リグレッションテスト ──────────────────────────
-test.describe('VRT (Visual Regression)', () => {
-  test('Hero セクション — デスクトップ', async ({ page }) => {
+test.describe('VRT', () => {
+  test('Hero — デスクトップ', async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 800 });
     await gotoAndWait(page);
     await expect(page.locator('#hero')).toHaveScreenshot('hero-desktop.png');
   });
 
-  test('Menu セクション — デスクトップ', async ({ page }) => {
+  test('Menu — デスクトップ', async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 800 });
     await gotoAndWait(page);
     await page.locator('#menu').scrollIntoViewIfNeeded();
-    await page.waitForTimeout(300);
     await expect(page.locator('#menu')).toHaveScreenshot('menu-desktop.png');
   });
 
-  test('全ページ — モバイル (375px)', async ({ page }) => {
-    await page.setViewportSize({ width: 375, height: 812 });
+  test('全ページ — モバイル390px', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
     await gotoAndWait(page);
-    await expect(page).toHaveScreenshot('full-page-mobile.png', {
-      fullPage: true,
-      // 外部画像の読み込みに猶予を与える
-      animations: 'disabled',
-    });
+    await expect(page).toHaveScreenshot('full-page-mobile.png', { fullPage: true });
+  });
+
+  test('モバイルメニュー — 展開状態', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await gotoAndWait(page);
+    await page.locator('#menu-toggle').click();
+    await expect(page.locator('body > div.sticky > header')).toHaveScreenshot('mobile-menu-open.png');
   });
 });

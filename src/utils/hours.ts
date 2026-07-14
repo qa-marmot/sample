@@ -28,6 +28,34 @@ export function getTodayIndex(jsDay: number): number {
 }
 
 /**
+ * 指定タイムゾーンにおける曜日を HOURS 配列のインデックスで返す。
+ * Cloudflare の実行環境に依存せず、店舗所在地の曜日を表示するために使う。
+ */
+export function getTodayIndexForTimeZone(
+  date: Date,
+  timeZone = 'Asia/Tokyo',
+): number {
+  if (Number.isNaN(date.getTime())) throw new RangeError('Invalid date');
+
+  const weekday = new Intl.DateTimeFormat('en-US', {
+    weekday: 'short',
+    timeZone,
+  }).format(date);
+  const jsDays: Record<string, number> = {
+    Sun: 0,
+    Mon: 1,
+    Tue: 2,
+    Wed: 3,
+    Thu: 4,
+    Fri: 5,
+    Sat: 6,
+  };
+  const jsDay = jsDays[weekday];
+  if (jsDay === undefined) throw new RangeError(`Unsupported weekday: ${weekday}`);
+  return getTodayIndex(jsDay);
+}
+
+/**
  * 指定した曜日・時刻が営業中かどうかを返す
  * @param jsDay  JS の getDay() 値 (0=日〜6=土)
  * @param hour   時 (0-23)

@@ -7,16 +7,13 @@ const isDev = process.env.NODE_ENV === "development";
 export default defineConfig({
   integrations: [tailwind()],
 
+  devToolbar: { enabled: false },
+
   output: isDev ? "static" : "server",
 
   ...(isDev
     ? {}
     : {
-        adapter: cloudflare(),
-        image: {
-          service: {
-            entrypoint: "@astrojs/cloudflare/image-service",
-          },
-        },
+        adapter: cloudflare({ imageService: "cloudflare" }),
       }),
 });

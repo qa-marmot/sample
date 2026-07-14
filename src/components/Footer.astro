@@ -1,36 +1,29 @@
----
----
-<footer class="bg-espresso text-cream/45 py-16 px-6">
-  <div class="max-w-5xl mx-auto">
-
-    <!-- 上段 -->
-    <div class="flex flex-col sm:flex-row items-center justify-between gap-8 pb-10 border-b border-cream/[0.08]">
-
-      <!-- ロゴ + キャッチ -->
-      <div class="text-center sm:text-left">
-        <p class="font-display text-2xl font-bold text-cream/85 tracking-wide mb-1">
-          Café <span class="italic text-latte">Ouka</span>
+<footer class="theme-inverse border-t border-accent-soft bg-ink px-gutter py-16 text-inverse">
+  <div class="mx-auto max-w-content">
+    <div class="grid gap-10 border-b border-accent-soft pb-10 md:grid-cols-[1fr_auto] md:items-end">
+      <div>
+        <p class="font-brand text-3xl font-bold text-inverse">
+          Café <span class="italic text-accent-soft">Ouka</span>
         </p>
-        <p class="font-sans text-xs text-cream/40 tracking-wide">
-          東京・代々木上原 &ensp;/&ensp; Coffee &amp; Sweets
+        <p class="mt-2 text-sm text-accent-soft">東京・代々木上原 / Coffee &amp; Sweets</p>
+        <p class="mt-4 max-w-md text-sm leading-relaxed text-inverse">
+          このサイトは、架空の店舗を題材にしたWebサイト制作デモです。掲載情報は実在する店舗・サービスとは関係ありません。
         </p>
       </div>
 
-      <!-- ナビ -->
-      <nav aria-label="フッターナビゲーション" class="flex gap-7 text-[11px] font-sans tracking-[0.2em] uppercase text-cream/40">
-        <a href="#concept" class="hover:text-latte transition-colors duration-200">Concept</a>
-        <a href="#menu"    class="hover:text-latte transition-colors duration-200">Menu</a>
-        <a href="#hours"   class="hover:text-latte transition-colors duration-200">Hours</a>
-        <a href="#access"  class="hover:text-latte transition-colors duration-200">Access</a>
+      <nav aria-label="フッターナビゲーション">
+        <ul class="grid grid-cols-2 gap-x-8 gap-y-3 text-sm font-bold sm:flex sm:flex-wrap">
+          <li><a href="#menu" class="underline-offset-4 hover:text-accent-soft hover:underline">メニュー</a></li>
+          <li><a href="#concept" class="underline-offset-4 hover:text-accent-soft hover:underline">私たちについて</a></li>
+          <li><a href="#hours" class="underline-offset-4 hover:text-accent-soft hover:underline">営業時間</a></li>
+          <li><a href="#access" class="underline-offset-4 hover:text-accent-soft hover:underline">アクセス</a></li>
+        </ul>
       </nav>
-
     </div>
 
-    <!-- 下段 -->
-    <div class="pt-7 flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] text-cream/30">
-      <p>© 2026 Café Ouka. All rights reserved.</p>
-      <p class="text-latte/40">This is a demo site — サンプル制作物</p>
+    <div class="flex flex-col gap-2 pt-6 text-sm text-accent-soft sm:flex-row sm:items-center sm:justify-between">
+      <p>© 2026 Café Ouka.</p>
+      <p>Portfolio demo / 架空店舗</p>
     </div>
-
   </div>
 </footer>

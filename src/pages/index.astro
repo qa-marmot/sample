@@ -2,18 +2,24 @@
 import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import Hero from '../components/Hero.astro';
-import Concept from '../components/Concept.astro';
+import VisitSummary from '../components/VisitSummary.astro';
 import Menu from '../components/Menu.astro';
+import Concept from '../components/Concept.astro';
 import Hours from '../components/Hours.astro';
 import Access from '../components/Access.astro';
 import Footer from '../components/Footer.astro';
 ---
-<Layout title="Café Ouka — 代々木上原のカフェ【デモサイト】">
+
+<Layout
+  title="Café Ouka — カフェサイト制作デモ（架空店舗）"
+  description="Café Oukaは、代々木上原の架空カフェを想定したWebサイト制作デモです。メニュー、営業時間、アクセスをご覧いただけます。"
+>
   <Header />
-  <main>
+  <main id="main-content">
     <Hero />
-    <Concept />
+    <VisitSummary />
     <Menu />
+    <Concept />
     <Hours />
     <Access />
   </main>

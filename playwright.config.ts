@@ -28,7 +28,7 @@ export default defineConfig({
   expect: {
     toHaveScreenshot: {
       // Allow minor pixel-level diffs (font rendering differs per OS)
-      maxDiffPixelRatio: 0.02,
+      maxDiffPixelRatio: 0.005,
       threshold: 0.2,
     },
   },

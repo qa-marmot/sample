@@ -1,57 +1,96 @@
-# Café Ouka — デモサイト
+# Café Ouka — カフェサイト制作デモ
 
-カフェ・喫茶店向けサンプルサイトです。副業・フリーランスのWebサイト制作ポートフォリオ用デモとして作成しています。
+代々木上原の架空カフェを題材にした、ポートフォリオ用の1ページサイトです。実在する店舗・住所・電話番号・サービスとは関係ありません。検索結果で実店舗と誤認されないよう、画面上のデモ表示、`noindex`、`robots.txt`を設定しています。
 
 ## 技術スタック
 
-- **Astro** v4 — 静的サイトジェネレーター
-- **TailwindCSS** v3 — ユーティリティCSS
-- **Google Fonts** — Playfair Display / Lora / DM Sans
+- Astro 4
+- Tailwind CSS 3
+- Cloudflare adapter / Wrangler
+- Vitest / Playwright
+- Playfair Display（英字ロゴのみ）＋日本語システムフォント
 
 ## セットアップ
 
 ```bash
-npm install
-npm run dev      # 開発サーバー起動 (localhost:4321)
-npm run build    # 本番ビルド
-npm run preview  # ビルドプレビュー
+npm ci
+npm run dev
+npm test
+npm run build
+npm run test:e2e
+```
+
+開発サーバーは既定で `http://localhost:4321` に起動します。Visual Regressionの基準画像を意図的に更新する場合のみ、レビュー後に次を実行します。
+
+```bash
+npm run test:e2e:update
 ```
 
 ## 構成
 
-```
+```text
 src/
+├── assets/             # ローカル化した写真素材
+├── components/         # セクションと共通UI
+│   ├── ActionLink.astro
+│   ├── SectionHeading.astro
+│   └── VisitSummary.astro
 ├── layouts/
-│   └── Layout.astro       # ベースレイアウト（Fontsの読み込みなど）
-├── components/
-│   ├── DemoBanner.astro   # デモ表示バナー（本番時は削除）
-│   ├── Header.astro       # ナビゲーション（スマホ対応ドロワー付き）
-│   ├── Hero.astro         # ヒーローセクション
-│   ├── Menu.astro         # メニューセクション
-│   ├── Hours.astro        # 営業時間セクション
-│   ├── Access.astro       # アクセスセクション（地図付き）
-│   └── Footer.astro       # フッター
-└── pages/
-    └── index.astro        # メインページ
+│   └── Layout.astro    # metadata、skip link、共通head
+├── pages/
+│   └── index.astro     # 唯一の公開ルート
+├── styles/
+│   └── global.css      # Semantic Tokenと共通状態
+└── utils/              # メニュー・営業時間データとロジック
 ```
 
-## カスタマイズ方法
+ページ順はHeader、Hero、来店情報、Menu、Concept、Hours、Access、Footerです。フォーム、CMS、API、予約、購入機能はありません。
 
-| 変更箇所 | ファイル |
-|----------|---------|
-| 店名・キャッチコピー | `Hero.astro` |
-| メニュー内容・価格 | `Menu.astro` の `categories` 配列 |
-| 営業時間 | `Hours.astro` の `hours` 配列 |
-| 住所・電話番号 | `Access.astro` |
-| カラーテーマ | `tailwind.config.mjs` |
-| Googleマップ埋め込み | `Access.astro` のMap部分をiframe化 |
+## デザインシステム
 
-## 本番化の際の注意
+色、余白、コンテンツ幅、モーションは `src/styles/global.css` のCSS Custom Propertiesで定義し、`tailwind.config.mjs` のsemantic aliasから利用します。重要な本文色をopacityで薄くせず、通常文字はWCAG 2.2 AA相当のコントラストを維持してください。
 
-- `DemoBanner.astro` を削除またはコメントアウトしてください
-- `Access.astro` のマップをGoogle Maps iframeに差し替えてください
-- `Head` の description・OGPを実際の店舗情報に変更してください
+共通UIは以下の責務に限定しています。
 
----
+- `ActionLink.astro`: primary / secondary / text CTA
+- `SectionHeading.astro`: light / darkの見出し
+- `VisitSummary.astro`: 来店判断に必要な要点
 
-> 🎨 このサイトはデモ・ポートフォリオ用サンプルです
+## コンテンツの変更場所
+
+| 内容 | ファイル |
+|---|---|
+| 店名・Heroコピー | `src/components/Hero.astro` |
+| メニュー・価格 | `src/utils/menu.ts` |
+| 営業時間 | `src/utils/hours.ts` |
+| 住所・電話番号 | `src/components/Access.astro` |
+| 色・余白・モーション | `src/styles/global.css` |
+| Tailwind alias | `tailwind.config.mjs` |
+
+## 画像素材
+
+既存サイトで使用していたUnsplash写真を、外部通信とレイアウトシフトを減らすためローカル化しています。
+
+- Hero: `photo-1509042239860-f550ce710b93`
+- 店内: `photo-1521017432531-fbd92d768814`
+- Menu: `photo-1495474472287-4d71bcdd2085`
+
+Astroの画像処理を通し、Heroだけをeager、その他をlazyで読み込みます。実店舗へ転用する際は、これらを実際の店舗・商品写真へ差し替えてください。
+
+## 本番転用時の確認事項
+
+このリポジトリのままでは架空店舗デモとして公開されます。実店舗向けに転用する場合は、次を実在情報へ置き換えたうえで、`noindex`と`public/robots.txt`を見直してください。
+
+- title、description、公開URL、OGP
+- 店名、住所、電話番号、営業時間、メニュー
+- 写真と代替テキスト
+- 地図プレースホルダー
+- 法的表示や必要な問い合わせ導線
+
+架空のLocalBusiness構造化データは追加しません。
+
+## デプロイ
+
+`astro.config.mjs` と `wrangler.jsonc` はCloudflare向けに設定されています。公開前に `npm run build` を実行し、Cloudflare previewでHeader、アンカー、画像、404、モバイルメニューを確認してください。公開URLはリポジトリ内に固定していません。
+
+本番画像はCloudflare Image Transformations（`/cdn-cgi/image`）を使用します。デプロイ先で画像変換を利用できることをpreviewで確認してください。ローカル開発ではAstroのSharpサービスが同じresponsive image指定を処理します。

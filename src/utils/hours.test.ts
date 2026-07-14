@@ -1,5 +1,11 @@
 import { describe, it, expect } from 'vitest';
-import { HOURS, getTodayIndex, isOpenAt, isLastOrderAt } from './hours';
+import {
+  HOURS,
+  getTodayIndex,
+  getTodayIndexForTimeZone,
+  isOpenAt,
+  isLastOrderAt,
+} from './hours';
 
 // ── HOURS データ整合性 ───────────────────────────────────────
 describe('HOURS master data', () => {
@@ -63,6 +69,23 @@ describe('getTodayIndex', () => {
   it('無効な値はエラーをスロー', () => {
     expect(() => getTodayIndex(-1)).toThrow(RangeError);
     expect(() => getTodayIndex(7)).toThrow(RangeError);
+  });
+});
+
+// ── getTodayIndexForTimeZone ─────────────────────────────────
+describe('getTodayIndexForTimeZone', () => {
+  it('UTCでは月曜でも、日本時間で火曜ならindex 1を返す', () => {
+    const date = new Date('2026-07-13T15:30:00.000Z');
+    expect(getTodayIndexForTimeZone(date, 'Asia/Tokyo')).toBe(1);
+  });
+
+  it('UTCでは日曜でも、日本時間で月曜ならindex 0を返す', () => {
+    const date = new Date('2026-07-12T15:30:00.000Z');
+    expect(getTodayIndexForTimeZone(date, 'Asia/Tokyo')).toBe(0);
+  });
+
+  it('無効な日付はエラーをスロー', () => {
+    expect(() => getTodayIndexForTimeZone(new Date('invalid'))).toThrow(RangeError);
   });
 });
 
