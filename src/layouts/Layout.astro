@@ -9,7 +9,7 @@ interface Props {
 
 const {
   title,
-  description = 'Café Oukaは、代々木上原の架空カフェを想定したWebサイト制作デモです。',
+  description = '代々木上原のCafé Ouka。ハンドドリップコーヒーと、毎朝仕込むお菓子をご用意しています。',
   noindex = true,
 } = Astro.props;
 ---
@@ -20,6 +20,10 @@ const {
     <meta charset="UTF-8" />
     <meta name="description" content={description} />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#1E0F07" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
     {noindex && <meta name="robots" content="noindex, nofollow" />}
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />

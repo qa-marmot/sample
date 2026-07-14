@@ -4,7 +4,7 @@ import heroCoffee from '../assets/hero-coffee.jpg';
 import ActionLink from './ActionLink.astro';
 ---
 
-<section id="hero" class="relative isolate min-h-[clamp(38rem,82svh,52rem)] overflow-hidden bg-primary">
+<section id="hero" class="relative isolate min-h-[clamp(40rem,86svh,54rem)] overflow-hidden bg-primary">
   <Image
     src={heroCoffee}
     alt=""
@@ -12,14 +12,15 @@ import ActionLink from './ActionLink.astro';
     sizes="100vw"
     loading="eager"
     fetchpriority="high"
-    class="absolute inset-0 -z-20 h-full w-full object-cover object-[62%_center] md:object-center"
+    class="absolute inset-0 -z-20 h-full w-full object-cover object-[68%_center] saturate-[.82] md:object-center"
   />
-  <div class="absolute inset-0 -z-10 bg-gradient-to-r from-primary via-primary/80 to-primary/20"></div>
+  <div class="absolute inset-0 -z-10 bg-gradient-to-r from-primary via-primary/75 to-primary/10"></div>
+  <div class="absolute inset-0 -z-10 bg-gradient-to-t from-primary/65 via-transparent to-primary/10"></div>
 
-  <div class="mx-auto flex min-h-[clamp(38rem,82svh,52rem)] max-w-content items-center px-gutter py-18">
-    <div class="max-w-2xl text-inverse">
+  <div class="mx-auto flex min-h-[clamp(40rem,86svh,54rem)] max-w-content items-center px-gutter py-18">
+    <div class="max-w-2xl border-l border-accent-soft/70 pl-5 text-inverse sm:pl-8">
       <p class="mb-4 text-xs font-bold uppercase tracking-label text-accent-soft">
-        代々木上原・Coffee &amp; Sweets
+        Yoyogi-Uehara / Coffee &amp; Sweets
       </p>
       <h1 class="font-brand text-h1 font-bold tracking-tight text-inverse">
         Café <span class="block italic text-accent-soft sm:inline">Ouka</span>

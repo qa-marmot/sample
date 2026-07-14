@@ -19,7 +19,7 @@ test.describe('ページ構造とコンテンツ', () => {
     await expect(page.locator('#concept h2')).toContainText('特別な一杯');
     await expect(page.locator('#hours h2')).toHaveText('営業時間');
     await expect(page.locator('#access h2')).toContainText('歩いて5分');
-    await expect(page.locator('footer')).toContainText('架空店舗');
+    await expect(page.locator('footer')).toContainText('静かな一杯の時間');
   });
 
   test('Heroで所在地・商品・価値・CTAを理解できる', async ({ page }) => {
@@ -42,10 +42,14 @@ test.describe('ページ構造とコンテンツ', () => {
     await expect(page.locator('#hours [aria-current="date"]')).toContainText('本日');
   });
 
-  test('架空店舗であることをmetadataと画面で明示する', async ({ page }) => {
-    await expect(page).toHaveTitle(/デモ（架空店舗）/);
+  test('店舗情報に沿ったmetadataを設定する', async ({ page }) => {
+    await expect(page).toHaveTitle(/代々木上原のコーヒーとお菓子/);
     await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex, nofollow');
-    await expect(page.getByText('DEMO / 架空店舗のサンプルサイト')).toBeVisible();
+  });
+
+  test('実地図と外部地図への導線を表示する', async ({ page }) => {
+    await expect(page.locator('#access iframe[title="Café Ouka周辺の地図"]')).toHaveAttribute('src', /google\.com\/maps/);
+    await expect(page.locator('#access').getByRole('link', { name: /Google Mapsで開く/ })).toHaveAttribute('target', '_blank');
   });
 });
 
@@ -155,7 +159,11 @@ test.describe('VRT', () => {
   test('全ページ — モバイル390px', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await gotoAndWait(page);
-    await expect(page).toHaveScreenshot('full-page-mobile.png', { fullPage: true });
+    await expect(page).toHaveScreenshot('full-page-mobile.png', {
+      fullPage: true,
+      mask: [page.locator('#access iframe')],
+      maskColor: '#EDE4D0',
+    });
   });
 
   test('モバイルメニュー — 展開状態', async ({ page }) => {

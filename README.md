@@ -1,6 +1,6 @@
-# Café Ouka — カフェサイト制作デモ
+# Café Ouka
 
-代々木上原の架空カフェを題材にした、ポートフォリオ用の1ページサイトです。実在する店舗・住所・電話番号・サービスとは関係ありません。検索結果で実店舗と誤認されないよう、画面上のデモ表示、`noindex`、`robots.txt`を設定しています。
+代々木上原のCoffee & Sweets「Café Ouka」の1ページサイトです。メニュー、コンセプト、営業時間、アクセスを、地域誌のような落ち着いたトーンで構成しています。公開URLが確定するまでは`noindex`と`robots.txt`で検索登録を抑止します。
 
 ## 技術スタック
 
@@ -63,31 +63,29 @@ src/
 | 店名・Heroコピー | `src/components/Hero.astro` |
 | メニュー・価格 | `src/utils/menu.ts` |
 | 営業時間 | `src/utils/hours.ts` |
-| 住所・電話番号 | `src/components/Access.astro` |
+| 住所・地図 | `src/components/Access.astro` |
 | 色・余白・モーション | `src/styles/global.css` |
 | Tailwind alias | `tailwind.config.mjs` |
 
 ## 画像素材
 
-既存サイトで使用していたUnsplash写真を、外部通信とレイアウトシフトを減らすためローカル化しています。
+サイトの静かなトーンと、コーヒー・焼き菓子・店内の役割が重ならないことを基準にPexelsで選定し、外部通信とレイアウトシフトを減らすためローカル化しています。各素材は選定時点でPexels上の「Free to use」表示を確認しています。
 
-- Hero: `photo-1509042239860-f550ce710b93`
-- 店内: `photo-1521017432531-fbd92d768814`
-- Menu: `photo-1495474472287-4d71bcdd2085`
+- Hero: [東京のハンドドリップ（Gu Ko）](https://www.pexels.com/photo/31986825/)
+- Menu: [コーヒーと焼き菓子（Andrew Neel）](https://www.pexels.com/photo/31906765/)
+- Concept: [自然光と木の家具がある店内（Maria Orlova）](https://www.pexels.com/photo/4940753/)
 
-Astroの画像処理を通し、Heroだけをeager、その他をlazyで読み込みます。実店舗へ転用する際は、これらを実際の店舗・商品写真へ差し替えてください。
+Astroの画像処理を通し、Heroだけをeager、その他をlazyで読み込みます。アクセス欄の地図はGoogle Mapsの埋め込み表示を使用します。
 
-## 本番転用時の確認事項
+## 公開前の確認事項
 
-このリポジトリのままでは架空店舗デモとして公開されます。実店舗向けに転用する場合は、次を実在情報へ置き換えたうえで、`noindex`と`public/robots.txt`を見直してください。
+公開時は次の情報を確認したうえで、`noindex`と`public/robots.txt`を見直してください。
 
 - title、description、公開URL、OGP
 - 店名、住所、電話番号、営業時間、メニュー
 - 写真と代替テキスト
-- 地図プレースホルダー
+- 地図の位置とアクセス経路
 - 法的表示や必要な問い合わせ導線
-
-架空のLocalBusiness構造化データは追加しません。
 
 ## デプロイ
 

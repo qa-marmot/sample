@@ -28,7 +28,7 @@
   --content-width-narrow: 45rem;
   --content-width-wide: 80rem;
   --section-space: 4.5rem;
-  --header-offset: 6.75rem;
+  --header-offset: 4.5rem;
   --motion-fast: 120ms;
   --motion-base: 180ms;
   --motion-slow: 240ms;
@@ -55,6 +55,11 @@ body {
   line-height: 1.75;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: var(--color-accent-soft);
+  color: var(--color-brand-primary);
 }
 
 *,
